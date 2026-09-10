@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+    {% block title %}Guestbook{% endblock %}
+    {% block head %}
+        {{ super() }}
+        <style type="text/css">
+            .important { color: #336699; }
+        </style>
+    {% endblock %}
+    {% block content %}
+        <h1>Guestbook</h1>
+        <p class="important">
+        This is the guestbook page.
+        </p>
+
+        <form method="post" action="/guestbook">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br><br>
+            <label for="website">Website:</label>
+            <input type="url" id="website" name="website"><br><br>
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" required></textarea><br><br>
+            <input type="submit" value="Submit">
+        </form>
+
+        <h2>Guestbook Entries</h2>
+        {% if entries %}
+            <ul>
+                {% for entry in entries %}
+                    <li>
+                        <strong>{{ entry.name }}</strong> ({{ entry.email }})
+                        {% if entry.website %}
+                            - <a href="{{ entry.website }}">{{ entry.website }}</a>
+                        {% endif %}
+                        <br>
+                        {{ entry.message }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No entries yet.</p>
+        {% endif %}
+
+    {% endblock %}
