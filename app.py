@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 import json
+import datetime
 
 app = Flask(__name__)
 
@@ -42,9 +43,11 @@ def guestbook():
             'name': request.form.get('name'),
             'email': request.form.get('email'),
             'website': request.form.get('website'),
-            'message': request.form.get('message')
+            'message': request.form.get('message'),
+            'timestamp': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
 
+        print(f"New entry from {new_entry['name']}: {new_entry}")
         entries.append(new_entry)
 
         with open('guestbook.json', 'w', encoding='utf-8') as f:

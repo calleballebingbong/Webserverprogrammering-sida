@@ -24,22 +24,32 @@
             <input type="submit" value="Submit">
         </form>
 
-        <h2>Guestbook Entries</h2>
-        {% if entries %}
-            <ul>
-                {% for entry in entries %}
-                    <li>
-                        <strong>{{ entry.name }}</strong> ({{ entry.email }})
-                        {% if entry.website %}
-                            - <a href="{{ entry.website }}">{{ entry.website }}</a>
-                        {% endif %}
-                        <br>
-                        {{ entry.message }}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No entries yet.</p>
-        {% endif %}
+<h2>Guestbook Entries</h2>
+    {% if entries %}
+        <ul class="guestbook-list">
+            {% for entry in entries %}
+                <li class="entry-card">
+                    <div class="entry-header">
+                        <div class="entry-details">
+                            <strong class="entry-name">{{ entry.name }}</strong>
+                            <div class="entry-email">{{ entry.email }}</div>
+                        </div>
+                        <div class="entry-meta">
+                            {% if entry.timestamp %}
+                                <div class="entry-time">{{ entry.timestamp }}</div>
+                            {% endif %}
+                            {% if entry.website %}
+                                <a href="{{ entry.website }}">{{ entry.website }}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <p class="entry-message">{{ entry.message }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No entries yet.</p>
+    {% endif %}
 
     {% endblock %}
