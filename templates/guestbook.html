@@ -41,6 +41,13 @@
                             {% if entry.website %}
                                 <a href="{{ entry.website }}">{{ entry.website }}</a>
                             {% endif %}
+                            <div id="comment-section">
+                                <label for="comment-{{ loop.index }}">Comment:</label>
+                                <input type="text" id="comment-{{ loop.index }}" name="comment" value="{{ entry.comment }}">
+                            </div>
+                            {% if entry.comment %}
+                                <div class="entry-comment">{{ entry.comment }}</div>
+                            {% endif %}
                         </div>
                     </div>
 

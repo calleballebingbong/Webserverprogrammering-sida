@@ -48,7 +48,7 @@ def guestbook():
         }
 
         print(f"New entry from {new_entry['name']}: {new_entry}")
-        entries.append(new_entry)
+        entries.insert(0, new_entry)
 
         with open('guestbook.json', 'w', encoding='utf-8') as f:
             json.dump(entries, f, ensure_ascii=False, indent=4)

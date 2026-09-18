@@ -54,6 +54,9 @@
 }
 
 .entry-card {
+    margin: 0 auto;
+    max-width:25%;
+    min-width: 25%;
     background: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 12px;
@@ -101,6 +104,10 @@
 }
 
 .entry-message {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
     margin-top: 0.5rem;
     line-height: 1.5;
 }
