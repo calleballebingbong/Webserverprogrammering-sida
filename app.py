@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 import json
 import datetime
 
@@ -54,6 +54,26 @@ def guestbook():
             json.dump(entries, f, ensure_ascii=False, indent=4)
 
     return render_template('guestbook.html', entries=entries)
+
+@app.route('/guestbook/<int:entry_index>/comment', methods=['POST'])
+def ann_comment(entry_index):
+    entries = load_entries()
+
+    if 0 <= entry_index < len(entries):
+        comment = {
+            'name': request.form.get('comment_name'),
+            'message': request.form.get('comment_message'),
+            'timestamp': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+
+        if 'comments' not in entries[entry_index]:
+            entries[entry_index]['comments'] = []
+
+        entries[entry_index]['comments'].append(comment)
+
+        with open('guestbook.json', 'w', encoding='utf-8') as f:
+            json.dump(entries, f, ensure_ascii=False, indent=4)
+    return redirect('/guestbook')
 
 if __name__ == '__main__':
     app.run(debug=True)

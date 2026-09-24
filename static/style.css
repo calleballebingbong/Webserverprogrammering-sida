@@ -120,3 +120,7 @@
 .entry-card a:hover {
     text-decoration: underline;
 }
+
+.comment-panel.hidden {
+    display: none;
+}

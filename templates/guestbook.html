@@ -11,7 +11,7 @@
         <p class="important">
         This is the guestbook page.
         </p>
-
+        <!-- Submission Form -->
         <form method="post" action="/guestbook">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required><br><br>
@@ -24,39 +24,64 @@
             <input type="submit" value="Submit">
         </form>
 
-<h2>Guestbook Entries</h2>
-    {% if entries %}
-        <ul class="guestbook-list">
-            {% for entry in entries %}
-                <li class="entry-card">
-                    <div class="entry-header">
-                        <div class="entry-details">
-                            <strong class="entry-name">{{ entry.name }}</strong>
-                            <div class="entry-email">{{ entry.email }}</div>
-                        </div>
-                        <div class="entry-meta">
-                            {% if entry.timestamp %}
-                                <div class="entry-time">{{ entry.timestamp }}</div>
-                            {% endif %}
-                            {% if entry.website %}
-                                <a href="{{ entry.website }}">{{ entry.website }}</a>
-                            {% endif %}
-                            <div id="comment-section">
-                                <label for="comment-{{ loop.index }}">Comment:</label>
-                                <input type="text" id="comment-{{ loop.index }}" name="comment" value="{{ entry.comment }}">
+        <!-- Guestbook Entries -->
+        <h2>Guestbook Entries</h2>
+            {% if entries %}
+                <ul class="guestbook-list">
+                    {% for entry in entries %}
+                        <li class="entry-card">
+                            <div class="entry-header">
+                                <div class="entry-details">
+                                    <strong class="entry-name">{{ entry.name }}</strong>
+                                    <div class="entry-email">{{ entry.email }}</div>
+                                </div>
+                                <div class="entry-meta">
+                                    {% if entry.timestamp %}
+                                        <div class="entry-time">{{ entry.timestamp }}</div>
+                                    {% endif %}
+                                    {% if entry.website %}
+                                        <a href="{{ entry.website }}">{{ entry.website }}</a>
+                                    {% endif %}
+                                </div>
                             </div>
-                            {% if entry.comment %}
-                                <div class="entry-comment">{{ entry.comment }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
 
-                    <p class="entry-message">{{ entry.message }}</p>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No entries yet.</p>
-    {% endif %}
+                            <p class="entry-message">{{ entry.message }}</p>
+
+                            
+                            <!-- Leave a comment -->
+                            <div id="comment-section">
+                                    <label for="comment-{{ loop.index }}">Comment:</label>
+                            </div>
+                            <form method="post" action="/guestbook/{{ loop.index0 }}/comment">
+                                <input type="text" name="comment_name" placeholder="Name" required>
+                                <textarea name="comment_message" placeholder="Write a comment..." required></textarea>
+                                <button type="submit">Comment</button>
+                            </form>
+                            <button type="button" class="toggle-comments" aria-expanded="false">
+                                Show Comments
+                            </button>
+
+                            <!-- comment section -->
+                            <div class="comment-panel hidden">
+                                {% if entry.comments %}
+                                    <ul class="comment-list">
+                                        {% for comment in entry.comments %}
+                                            <li class="comment-card">
+                                                <strong>{{ comment.name }}</strong>
+                                                <p>{{ comment.message }}</p>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p>No comments yet.</p>
+                                {% endif %}
+                            </div>
+
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No entries yet.</p>
+            {% endif %}
 
     {% endblock %}

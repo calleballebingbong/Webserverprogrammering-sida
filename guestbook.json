@@ -4,7 +4,24 @@
         "email": "hello@gmail.com",
         "website": "",
         "message": "Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello ",
-        "timestamp": "2026-09-18 11:14:20"
+        "timestamp": "2026-09-18 11:14:20",
+        "comments": [
+            {
+                "name": "test",
+                "message": "hello",
+                "timestamp": "2026-09-18 11:30:34"
+            },
+            {
+                "name": "joker",
+                "message": "you suck, jk!",
+                "timestamp": "2026-09-18 11:30:54"
+            },
+            {
+                "name": "test",
+                "message": "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+                "timestamp": "2026-09-18 12:03:11"
+            }
+        ]
     },
     {
         "name": "helo",
@@ -18,15 +35,20 @@
         "email": "tets@gmail.com",
         "website": "https://comment.com",
         "message": "comment test",
-        "comment": null,
-        "timestamp": "2026-09-17 13:29:50"
+        "timestamp": "2026-09-17 13:29:50",
+        "comments": [
+            {
+                "name": "joker",
+                "message": "why so serios, bhun buh buhb bmbmbmbmbmbm bmbmbm bmbmbmbmb ",
+                "timestamp": "2026-09-18 12:02:51"
+            }
+        ]
     },
     {
         "name": "test",
-        "email": "test2@gmail",
+        "email": "test2@gmail.com",
         "website": "",
         "message": "e",
-        "comment": null,
         "timestamp": "2026-09-17 13:27:34"
     }
 ]
