@@ -1,0 +1,10 @@
+{
+    "Test1": {
+        "password": "scrypt:32768:8:1$fw8lqmPVv2lg5mXG$355454dde018327eb5515ec67761043b3d341001fd76a83a33705dc0038dac4e6793955b3e678787f88042b4662a0e51608ff7fd5686c3b2ac7034b73220777f",
+        "email": "test1@gmail.com"
+    },
+    "Test2": {
+        "password": "scrypt:32768:8:1$HTCuoHrXosTkZcI9$7dfed345c5024a938b055a61b1b437c997096970db3fc1b72805c7240c733857a794b408143794a515bbeb39881b407663a50f8a09935a808ca883e12827228c",
+        "email": "test2@gmail.com"
+    }
+}

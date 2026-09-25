@@ -67,9 +67,9 @@
                                     <ul class="comment-list">
                                         {% for comment in entry.comments %}
                                             <li class="comment-card">
+                                                <div class="comment-time">{{ comment.timestamp }}</div>
                                                 <strong>{{ comment.name }}</strong>
-                                                <p>{{ comment.message }}</p>
-                                            </li>
+                                                <p>{{ comment.message }}</p>                                            </li>
                                         {% endfor %}
                                     </ul>
                                 {% else %}
