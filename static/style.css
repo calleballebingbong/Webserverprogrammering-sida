@@ -29,6 +29,11 @@
     color: #000;
 }
 
+#user-menu {
+    position: absolute;
+    right: 5%;
+}
+
 #content {
     padding: 20px;
     font-family: Arial, sans-serif;

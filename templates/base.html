@@ -15,8 +15,15 @@
             <li><a href="/about">About</a></li>
             <li><a href="/contact">Contact</a></li>
             <li><a href="/guestbook">Guestbook</a></li>
+            <div id="user-menu">
+            {% if 'user' in session %}
+                <p><a href="/profile">{{ session['user'] }}</a> | <a href="/logout">Logout</a></p>
+            {% else %}
+                <p><a href="/login">Login</a> | <a href="/register">Register</a></p>
+            {% endif %}
+            {% endblock %}
+            </div>
         </ul>
-        {% endblock %}
     </nav>
     
     <div id="content">{% block content %}{% endblock %}</div>

@@ -70,14 +70,8 @@ def login():
             session['user'] = username
             return redirect(url_for('profile'))
         else:
-            return "Invalid username or password."
-    return """
-    <form method="post">
-        Username: <input name="username"><br>
-        Password: <input name="password" type="password"><br>
-        <button type="submit">Login</button>
-    </form>
-    """
+            return render_template('login.html', error="Invalid username or password.")
+    return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -88,7 +82,7 @@ def register():
         users = load_users()
 
         if username in users:
-            return "Username already exists."
+            return render_template('register.html', error="Username already exists.")
 
         users[username] = {
             "password": generate_password_hash(password),
@@ -98,14 +92,7 @@ def register():
         save_users(users)
         return redirect(url_for('login'))
 
-    return """
-    <form method="post">
-        Username: <input name="username"><br>
-        Email: <input name="email"><br>
-        Password: <input name="password" type="password"><br>
-        <button type="submit">Register</button>
-    </form>
-    """
+    return render_template('register.html')
 
 @app.route('/profile')
 @login_required
@@ -113,7 +100,7 @@ def profile():
     username = session['user']
     users = load_users()
     email = users[username].get('email', "")
-    return f"welcome {username}! Your email is {email}."
+    return render_template('profile.html', username=username, email=email)
 
 @app.route('/logout')
 def logout():

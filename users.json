@@ -6,5 +6,17 @@
     "Test2": {
         "password": "scrypt:32768:8:1$HTCuoHrXosTkZcI9$7dfed345c5024a938b055a61b1b437c997096970db3fc1b72805c7240c733857a794b408143794a515bbeb39881b407663a50f8a09935a808ca883e12827228c",
         "email": "test2@gmail.com"
+    },
+    "calle": {
+        "password": "scrypt:32768:8:1$A1H2ZhjDWWE4PwEQ$736062931c6f2b8fd1af32182f66a6a32affb04ecd43eeb42f525edb187098b1ff8c2a13796b4f80f16ed40dc02017795aa90cee15b37f583254032e6ce02f86",
+        "email": "calle@gmail.com"
+    },
+    "Antologik": {
+        "password": "scrypt:32768:8:1$Flc38wI7jsHpiKkU$488da092ee8233e961abad2328b7ace391273490bb73e974ccfa0d3e4bd4d7a1b7ccbc47eaf0ec5b15bde21f0262ecf42796aa233f009bc364b60c902bc6aec5",
+        "email": "anton@gmail.com"
+    },
+    "Teduded": {
+        "password": "scrypt:32768:8:1$YDcUHKkHdDM8Uueq$9a9457e774f2290e51fd64d951baf3a2ea7cbe5c12622a9f9714178a2b0556296adb747842da3c86c7401f00f2e45e556d524d1ed378a80981d9f7cdfb85f0d6",
+        "email": "t.e.d.u.d.e.d@gmail.com.se.yahoo"
     }
 }
