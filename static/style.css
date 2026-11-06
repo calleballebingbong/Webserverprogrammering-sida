@@ -1,7 +1,21 @@
+body {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
 #menu {
     background-color: #f2f2f2;
     padding: 10px;
 }
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
 
 #nav {
     list-style: none;
@@ -35,6 +49,7 @@
 }
 
 #content {
+    flex: 1;
     padding: 20px;
     font-family: Arial, sans-serif;
     line-height: 1.6;
@@ -173,5 +188,26 @@
 .comment-panel {
     display: flex;
     justify-content: center;
+}
+
+.threadList {
+    background: #efefef;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.threadCard {
+    width: min(420px, 90%);
+    margin: 0 auto;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 1rem;
+    box-sizing: border-box;
 }
 

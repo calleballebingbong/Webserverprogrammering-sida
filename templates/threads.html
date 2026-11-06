@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Threads{% endblock %}
+
+{% block content %}
+    <h1>Threads</h1>
+
+    {% if session.get('user')%}
+        <form method="POST" action="{{ url_for('threads') }}">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+            <label for="body">Content:</label>
+            <textarea id="body" name="body" required></textarea>
+            <button type="submit">Create Thread</button>
+        </form>
+    {% else %}
+        <p>Please <a href="{{ url_for('login') }}">login</a> to create a thread.</p>
+    {% endif %}
+
+    <h2>Existing Threads</h2>
+    {% if threads %}
+        <ul class="threadList">
+            {% for thread in threads %}
+                <li class="threadCard">
+                    <h3>{{ thread.title }}</h3>
+                    <p>{{ thread.content }}</p>
+                    <p>
+                        Posted by {{ thread.username }} on {{ thread.created_at }}
+                    </p>
+                    <a href="{{ url_for('inthreads', thread_id=thread.id,slug=thread.title|lower|replace(' ', '-')) }}">View Thread</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No threads available.</p>
+    {% endif %}
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+{% endblock %}

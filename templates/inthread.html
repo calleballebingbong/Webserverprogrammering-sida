@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %} {{thread.title}} {% endblock %}
+
+{% block content %}
+    <h1>{{thread.title}}</h1>
+    <p>Posted by {{thread.username}} on {{thread.created_at}}</p>
+    <p>{{thread.body}}</p>
+
+    {% if session.get('user') %}
+        <h2>Leave a Comment</h2>
+        <form method="POST" action="{{ url_for('inthreads', thread_id=thread.id, slug=thread.title|lower|replace(' ', '-')) }}">
+            <label for="comment">Comment:</label>
+            <textarea id="comment" name="comment" required></textarea>
+            <button type="submit">Post Comment</button>
+        </form>
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+    {% else %}
+        <p>Please <a href="{{ url_for('login') }}">login</a> to leave a comment.</p>
+    {% endif %}
+
+    <h2>Comments:</h2>
+    {%if comments%}
+        {%for comment in comments %}
+            <article class="comment-card">
+                <p>{{ comment.body}}</p>
+                <small>Posted by {{comment.username}} on {{comment.created_at}}</small>
+            </article>
+        {%endfor%}
+    {%else%}
+        <p>No comments yet.</p>
+    {% endif %}
+
+    <p><a href="{{url_for('threads')}}">Back</a></p>
+{%endblock%}

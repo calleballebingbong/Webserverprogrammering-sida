@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, abort
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from functools import wraps
 import pymysql
+
+#$env:DB_PASSWORD = "psswrd"
 
 app = Flask(__name__)
 app.secret_key = 'secret_key'
@@ -114,25 +116,173 @@ def profile():
         with connection.cursor() as cursor:
             cursor.execute(
                 """
-                SELECT email FROM users
+                SELECT id, email FROM users
                 WHERE username = %s
                 """,
                 (username,),
             )
             user = cursor.fetchone()
+            if user is None:
+                session.pop('user', None)
+                return redirect(url_for('login'))
+            cursor.execute(
+                """
+                SELECT id, title, body, created_at FROM forum_threads
+                WHERE user_id = %s
+                ORDER BY created_at DESC
+                """,
+                (user['id'],),
+            )
+            posts = cursor.fetchall()
     finally:
         connection.close()
 
-    if user is None:
-        session.pop('user', None)
-        return redirect(url_for('login'))
-
-    return render_template('profile.html', username=username, email=user['email'] or '')
+    return render_template('profile.html', username=username, email=user['email'] or '', posts=posts)
 
 @app.route('/logout')
 def logout():
     session.pop('user', None)
     return redirect(url_for('index'))
+
+@app.route('/threads', methods=['GET', 'POST'])
+def threads():
+    if request.method == 'POST' and 'user' not in session:
+        return redirect(url_for('login'))
+
+    error = None
+    connection = get_db_connection()
+
+    try:
+        with connection.cursor() as cursor:
+            if request.method == 'POST':
+                title = request.form['title'].strip()
+                body = request.form['body'].strip()
+
+                if not title or not body:
+                    error = "Please enter both a title and a post."
+                else:
+                    cursor.execute(
+                        "SELECT id FROM users WHERE username = %s",
+                        (session['user'],),
+                    )
+                    user = cursor.fetchone()
+
+                    if user is None:
+                        session.pop('user', None)
+                        return redirect(url_for('login'))
+
+                    cursor.execute(
+                        """
+                        INSERT INTO forum_threads (user_id, title, body)
+                        VALUES (%s, %s, %s)
+                        """,
+                        (user['id'], title, body),
+                    )
+                    connection.commit()
+                    return redirect(url_for('threads'))
+
+            cursor.execute(
+                """
+                SELECT forum_threads.id, forum_threads.title,
+                    forum_threads.body, forum_threads.created_at,
+                    users.username
+                FROM forum_threads
+                JOIN users ON forum_threads.user_id = users.id
+                ORDER BY forum_threads.created_at DESC
+                """
+            )
+            thread_list = cursor.fetchall()
+
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        connection.close()
+
+    return render_template(
+        'threads.html',
+        threads=thread_list,
+        error=error,
+    )
+
+@app.route('/threads/<int:thread_id>/<slug>', methods=['GET', 'POST'])
+def inthreads(thread_id, slug):
+    if request.method == 'POST' and 'user' not in session:
+        return redirect(url_for('login'))
+
+    error = None
+    connection = get_db_connection()
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT forum_threads.id, forum_threads.title,forum_threads.body,forum_threads.created_at,users.username
+                FROM forum_threads
+                Join users ON forum_threads.user_id = users.id
+                WHERE forum_threads.id = %s
+                """,
+                (thread_id,),
+            )
+            thread = cursor.fetchone()
+
+            if thread is None:
+                abort(404)
+
+            if request.method == 'POST':
+                body = request.form.get('comment', '').strip()
+                if not body:
+                    error = "Please enter a comment."
+                else:
+                    cursor.execute(
+                        "SELECT id FROM users WHERE username = %s",
+                        (session['user'],),
+                    )
+                    user = cursor.fetchone()
+
+                    if user is None:
+                        session.pop('user', None)
+                        return redirect(url_for('login'))
+
+                    cursor.execute(
+                        """
+                        INSERT INTO forum_comments (thread_id, user_id, body)
+                        VALUES (%s, %s, %s)
+                        """,
+                        (thread_id, user['id'], body),
+                    )
+                    connection.commit()
+                    return redirect(
+                        url_for(
+                            'inthreads',
+                            thread_id=thread_id,
+                            slug=slug,
+                        )
+                    )
+
+            cursor.execute(
+                """
+                SELECT forum_comments.body, forum_comments.created_at,users.username
+                From forum_comments
+                JOIN users ON forum_comments.user_id = users.id
+                WHERE forum_comments.thread_id = %s
+                ORDER BY forum_comments.created_at ASC
+                """,
+                (thread_id,),
+            )
+            comments = cursor.fetchall()
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        connection.close()
+    return render_template(
+        'inthread.html',
+        thread=thread,
+        comments=comments,
+        error=error,
+    )
+
 
 @app.route('/guestbook', methods=['GET', 'POST'])
 def guestbook():
