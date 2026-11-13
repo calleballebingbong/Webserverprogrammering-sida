@@ -211,3 +211,63 @@ ul {
     box-sizing: border-box;
 }
 
+.topic-browser {
+    width: min(720px, 100%);
+    margin: 2rem auto;
+    padding: 1.25rem;
+    box-sizing: border-box;
+    background: #f7f9fc;
+    border: 1px solid #dfe5ed;
+    border-radius: 14px;
+    text-align: left;
+}
+
+.topic-browser h2 {
+    margin: 0 0 1rem;
+    text-align: center;
+}
+
+.topic-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+}
+
+.topic-link {
+    display: inline-block;
+    padding: 0.45rem 0.85rem;
+    border: 1px solid #cbd6e2;
+    border-radius: 999px;
+    background: #fff;
+    color: #24527a;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.topic-link:hover,
+.topic-link:focus-visible {
+    background: #e8f1fa;
+    border-color: #8eabc7;
+    text-decoration: none;
+}
+
+.topic-more {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.topic-more summary {
+    display: inline-block;
+    padding: 0.4rem 0.75rem;
+    color: #24527a;
+    cursor: pointer;
+    font-weight: 600;
+    list-style-position: inside;
+}
+
+.topic-more .topic-list {
+    margin-top: 0.85rem;
+}
+

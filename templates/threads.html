@@ -7,6 +7,15 @@
 
     {% if session.get('user')%}
         <form method="POST" action="{{ url_for('threads') }}">
+            <label for="topic_name">Topic:</label>
+            <input 
+            type="text"
+            id="topic_name"
+            name="topic_name"
+            maxlength="80"
+            required
+            placeholder=" Enter a topic."
+            >
             <label for="title">Title:</label>
             <input type="text" id="title" name="title" required>
             <label for="body">Content:</label>
@@ -17,13 +26,42 @@
         <p>Please <a href="{{ url_for('login') }}">login</a> to create a thread.</p>
     {% endif %}
 
+    <section class="topic-browser" aria-labelledby="topic-browser-title">
+        <h2 id="topic-browser-title">Browse by Topic</h2>
+        <ul class="topic-list">
+            <li>
+                <a class="topic-link" href="{{ url_for('threads') }}">All Topics</a>
+            </li>
+            {% for topic in topics[:5] %}
+                <li>
+                    <a class="topic-link" href="{{ url_for('threads', topic_id=topic.id) }}">{{ topic.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+        {% if topics|length > 5 %}
+            <details class="topic-more">
+                <summary>See {{ topics|length - 5 }} more topics</summary>
+                <ul class="topic-list">
+                    {% for topic in topics[5:] %}
+                        <li>
+                            <a class="topic-link" href="{{ url_for('threads', topic_id=topic.id) }}">{{ topic.name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </details>
+        {% endif %}
+    </section>
+    
+
+
     <h2>Existing Threads</h2>
     {% if threads %}
         <ul class="threadList">
             {% for thread in threads %}
                 <li class="threadCard">
                     <h3>{{ thread.title }}</h3>
-                    <p>{{ thread.content }}</p>
+                    <p>Topic: {{ thread.topic_name }}</p>
+                    <p>{{ thread.body }}</p>
                     <p>
                         Posted by {{ thread.username }} on {{ thread.created_at }}
                     </p>

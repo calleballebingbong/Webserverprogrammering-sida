@@ -144,25 +144,86 @@ def logout():
     session.pop('user', None)
     return redirect(url_for('index'))
 
+@app.route('/topics', methods=['GET', 'POST'])
+def topics():
+    if request.method == 'POST' and 'user' not in session:
+        return redirect(url_for('login'))
+    error = None
+
+    if request.method == 'POST':
+        name = request.form['name'].strip()
+        if not name or len(name) > 80:
+            error = "Please enter a valid topic name (1-80 characters)."
+        else:
+            connection = get_db_connection()
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        'SELECT id FROM users WHERE username = %s', (session['user'],),
+                    )
+                    user = cursor.fetchone()
+
+                    if user is None:
+                        session.pop('user', None)
+                        return redirect(url_for('login'))
+
+                    cursor.execute(
+                        'INSERT INTO forum_topics (name, created_by) VALUES (%s, %s)',
+                        (name, user['id']),
+                    )
+                    connection.commit()
+            except pymysql.err.IntegrityError as db_error:
+                connection.rollback()
+                if db_error.args[0] != 1062:  # Duplicate entry error code
+                    raise
+                error = "Topic name already exists. Please choose a different name."
+            except Exception:
+                connection.rollback()
+                raise
+            finally:
+                connection.close()
+            if error is None:
+                return redirect(url_for('topics'))
+
+    connection = get_db_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                'SELECT id, name FROM forum_topics WHERE (%s IS NULL OR forum_threads.topic.id = %s) ORDER BY name',
+            )
+            topics = cursor.fetchall()
+    finally:
+        connection.close()
+    
+    return render_template('topics.html', topics=topics, error=error)
+
 @app.route('/threads', methods=['GET', 'POST'])
 def threads():
     if request.method == 'POST' and 'user' not in session:
         return redirect(url_for('login'))
 
     error = None
+    selected_topic_id = request.args.get('topic_id', type=int)
     connection = get_db_connection()
 
     try:
         with connection.cursor() as cursor:
-            if request.method == 'POST':
-                title = request.form['title'].strip()
-                body = request.form['body'].strip()
 
-                if not title or not body:
-                    error = "Please enter both a title and a post."
+            cursor.execute(
+                'SELECT id, name FROM forum_topics ORDER BY name'
+            )
+            topics = cursor.fetchall()
+
+            if request.method == 'POST':
+                title = request.form.get('title', '').strip()
+                body = request.form.get('body', '').strip()
+                topic_name = request.form.get('topic_name', '').strip()
+
+                if not title or not body or not topic_name or len(topic_name) > 80:
+                    error = 'Enter a title, post, and topic name (up to 80 characters).'
                 else:
                     cursor.execute(
-                        "SELECT id FROM users WHERE username = %s",
+                        'SELECT id FROM users WHERE username = %s',
                         (session['user'],),
                     )
                     user = cursor.fetchone()
@@ -172,11 +233,21 @@ def threads():
                         return redirect(url_for('login'))
 
                     cursor.execute(
-                        """
-                        INSERT INTO forum_threads (user_id, title, body)
-                        VALUES (%s, %s, %s)
-                        """,
-                        (user['id'], title, body),
+                        '''
+                        INSERT INTO forum_topics (name, created_by)
+                        VALUES (%s, %s)
+                        ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)
+                        ''',
+                        (topic_name, user['id']),
+                    )
+                    topic_id = cursor.lastrowid
+
+                    cursor.execute(
+                        '''
+                        INSERT INTO forum_threads (user_id, topic_id, title, body)
+                        VALUES (%s, %s, %s, %s)
+                        ''',
+                        (user['id'], topic_id, title, body),
                     )
                     connection.commit()
                     return redirect(url_for('threads'))
@@ -185,11 +256,15 @@ def threads():
                 """
                 SELECT forum_threads.id, forum_threads.title,
                     forum_threads.body, forum_threads.created_at,
-                    users.username
+                    users.username, forum_topics.name AS topic_name
                 FROM forum_threads
                 JOIN users ON forum_threads.user_id = users.id
+                JOIN forum_topics ON forum_threads.topic_id = forum_topics.id
+                WHERE (%s IS NULL OR forum_threads.topic_id = %s)
                 ORDER BY forum_threads.created_at DESC
-                """
+                """,
+                (selected_topic_id, selected_topic_id),
+
             )
             thread_list = cursor.fetchall()
 
@@ -202,6 +277,7 @@ def threads():
     return render_template(
         'threads.html',
         threads=thread_list,
+        topics=topics,
         error=error,
     )
 

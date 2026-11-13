@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Topics{% endblock %}
+
+{% block content %}
+<h1>Topics</h1>
+
+{% if session.get('user') %}
+<form method="POST" action="{{url_for('topics')}}">
+    <label for="name">Add a new topic:</label>
+    <input type="text" id="name" name="name" required maxlength="80">
+    <button type="submit">Create Topic</button>
+</form>
+{% else %}
+    <p>Please <a href="{{url_for('login')}}">log in</a> to create a new topic.</p>
+{% endif %}
+
+{% if error %}
+    <p role="alert">{{ error }}</p>
+{% endif %}
+
+<h2>Existing Topics</h2>
+{% if topics %}
+<ul>
+    {% for topic in topics[:5] %}
+        <li>{{ topic.name }}</li>
+    {% endfor %}
+</ul>
+
+{% if topics|length > 5 %}
+    <details>
+        <summary>See {{ topics|length - 5 }} more topics</summary>
+        <ul>
+            {% for topic in topics[5:] %}
+                <li>{{ topic.name }}</li>
+            {% endfor %}
+        </ul>
+    </details>
+{% endif %}
+
+{% else %}
+    <p>No topics yet.</p>
+{% endif %}
+
+{% endblock %}
