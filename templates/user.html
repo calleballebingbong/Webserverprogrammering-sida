@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}{{ username }}'s Profile{% endblock %}
+
+{% block content %}
+<h1>{{ username }}'s Profile</h1>
+<h2>Posts</h2>
+{% if posts %}
+    <ul class="threadList">
+        {% for post in posts %}
+            <li class="threadCard">
+                <a href="{{ url_for('inthreads', thread_id=post.id, slug=post.title|lower|replace(' ', '-')) }}">{{ post.title }}</a>
+                <p>{{ post.body }}</p>
+                <small>Posted on {{ post.created_at }}</small>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>This user hasn't made any posts yet.</p>
+{% endif %}
+{% endblock %}

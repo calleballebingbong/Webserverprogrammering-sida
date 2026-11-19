@@ -4,7 +4,7 @@
 
 {% block content %}
     <h1>{{thread.title}}</h1>
-    <p>Posted by {{thread.username}} on {{thread.created_at}}</p>
+    <p>Posted by <a href="{{ url_for('user', username=thread.username) }}">{{thread.username}}</a> on {{thread.created_at}}</p>
     <p>{{thread.body}}</p>
 
     {% if session.get('user') %}
@@ -26,7 +26,7 @@
         {%for comment in comments %}
             <article class="comment-card">
                 <p>{{ comment.body}}</p>
-                <small>Posted by {{comment.username}} on {{comment.created_at}}</small>
+                <small>Posted by <a href="{{ url_for('user', username=comment.username) }}">{{comment.username}}</a> on {{comment.created_at}}</small>
             </article>
         {%endfor%}
     {%else%}

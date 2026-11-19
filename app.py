@@ -139,6 +139,34 @@ def profile():
 
     return render_template('profile.html', username=username, email=user['email'] or '', posts=posts)
 
+@app.route('/user/<username>')
+def user(username):
+    connection = get_db_connection()
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                'SELECT id, username FROM users WHERE username = %s',
+                (username,),
+            )
+            user = cursor.fetchone()
+            if user is None:
+                abort(404)
+
+            cursor.execute(
+                """
+                SELECT id, title, body, created_at FROM forum_threads
+                WHERE user_id = %s
+                ORDER BY created_at DESC
+                """,
+                (user['id'],),
+            )
+            posts = cursor.fetchall()
+    finally:
+        connection.close()
+
+    return render_template('user.html', username=user['username'], posts=posts)
+
 @app.route('/logout')
 def logout():
     session.pop('user', None)
